@@ -1,5 +1,6 @@
 package me.kamili.rachid.walmartapp.view.products;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,22 +16,23 @@ import butterknife.ButterKnife;
 import me.kamili.rachid.walmartapp.R;
 import me.kamili.rachid.walmartapp.adapters.ProductAdapter;
 import me.kamili.rachid.walmartapp.model.Product;
+import me.kamili.rachid.walmartapp.view.details.DetailsActivity;
 import me.kamili.rachid.walmartapp.view.utils.AttributesUtils;
 import me.kamili.rachid.walmartapp.view.utils.EndlessRecyclerOnScrollListener;
 
-public class ProductsActivity extends AppCompatActivity implements ProductsContract.View {
+public class ProductsActivity extends AppCompatActivity implements ProductsContract.View, ProductAdapter.OnProductClickListener {
 
     @BindView(R.id.rvProducts)
     RecyclerView mRecyclerView;
     ProductsPresenter presenter;
-    private List<Product> myDataset = new ArrayList<>();
+    public static List<Product> myDataset = new ArrayList<>();
     private RecyclerView.Adapter mAdapter;
     private String mNextPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_products);
 
         ButterKnife.bind(this);
         presenter = new ProductsPresenter(this);
@@ -90,5 +92,13 @@ public class ProductsActivity extends AppCompatActivity implements ProductsContr
     @Override
     public void showError(String error) {
         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClick(Product item, int position) {
+        Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+        intent.putExtra("position",position);
+        startActivity(intent);
+
     }
 }

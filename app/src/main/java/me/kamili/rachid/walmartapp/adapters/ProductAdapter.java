@@ -22,13 +22,13 @@ import me.kamili.rachid.walmartapp.model.Product;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
     private Context mContext;
-    private OnEventClickListener clickListener;
+    private OnProductClickListener clickListener;
     private List<Product> mDataset;
 
     public ProductAdapter(Context context, List<Product> myDataset) {
         this.mDataset = myDataset;
         this.mContext = context;
-//        this.clickListener = (OnEventClickListener) context;
+        this.clickListener = (OnProductClickListener) context;
     }
 
     @NonNull
@@ -53,7 +53,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 .apply(new RequestOptions().override(180, 180))
                 .into(holder.ivImage);
 
-        holder.bind(mDataset.get(position));
+        holder.bind(mDataset.get(position), position);
     }
 
     @Override
@@ -61,8 +61,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         return mDataset.size();
     }
 
-    public interface OnEventClickListener {
-        void onItemClick(Product item);
+    public interface OnProductClickListener {
+        void onItemClick(Product item, int position);
     }
 
 
@@ -79,11 +79,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(final Product item) {
+        public void bind(final Product item, final int position) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clickListener.onItemClick(item);
+                    clickListener.onItemClick(item, position);
                 }
             });
         }
