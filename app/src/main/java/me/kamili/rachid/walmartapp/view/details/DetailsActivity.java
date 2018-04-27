@@ -9,13 +9,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.kamili.rachid.walmartapp.R;
 import me.kamili.rachid.walmartapp.model.Product;
-import me.kamili.rachid.walmartapp.view.utils.ActivitySwipeDetector;
+import me.kamili.rachid.walmartapp.utils.ActivitySwipeDetector;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsContract.View {
 
@@ -28,6 +26,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContrac
     TextView tvName;
     @BindView(R.id.tvDesc)
     TextView tvDesc;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContrac
         LinearLayout linearLayout = findViewById(R.id.linearLayout);
         linearLayout.setOnTouchListener(new ActivitySwipeDetector(this));
 
-        int position = getIntent().getIntExtra("position", -1);
+        position = getIntent().getIntExtra("position", -1);
         presenter = new DetailsPresenter(position);
     }
 
@@ -61,11 +60,29 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContrac
 
     @Override
     public void loadProduct(Product product) {
+        loadP(product);
+    }
+
+    @Override
+    public void swipeToNext() {
+        position++;
+        if (presenter.checkProductExists(position)){
+            loadP(presenter.getProductByPosition(position));
+        }
+    }
+
+    @Override
+    public void swipeToPrev() {
+        position--;
+        if (presenter.checkProductExists(position)){
+            loadP(presenter.getProductByPosition(position));
+        }
+    }
+
+    void loadP(Product product){
         Glide.with(this).load(product.getLargeImage()).into(ivImage);
         tvPrice.setText("$"+product.getSalePrice());
         tvName.setText(product.getName());
         tvDesc.setText(product.getShortDescription());
-
-
     }
 }

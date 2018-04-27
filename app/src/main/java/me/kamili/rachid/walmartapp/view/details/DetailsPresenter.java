@@ -31,4 +31,14 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void detachView() {
         this.view = null;
     }
+
+    @Override
+    public boolean checkProductExists(int position) {
+        return mPoducts.get(position)!=null;
+    }
+
+    @Override
+    public Product getProductByPosition(int position) {
+        return mPoducts.get(position);
+    }
 }

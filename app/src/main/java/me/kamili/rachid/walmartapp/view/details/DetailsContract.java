@@ -7,9 +7,12 @@ import me.kamili.rachid.walmartapp.view.base.BaseView;
 public interface DetailsContract {
     interface View extends BaseView {
         void loadProduct(Product product);
+        void swipeToNext();
+        void swipeToPrev();
     }
 
     interface Presenter extends BasePresenter<View> {
-
+        boolean checkProductExists(int position);
+        Product getProductByPosition(int position);
     }
 }

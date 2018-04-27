@@ -1,7 +1,6 @@
-package me.kamili.rachid.walmartapp.view.utils;
+package me.kamili.rachid.walmartapp.utils;
 
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScrollListener {

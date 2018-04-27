@@ -17,8 +17,8 @@ import me.kamili.rachid.walmartapp.R;
 import me.kamili.rachid.walmartapp.adapters.ProductAdapter;
 import me.kamili.rachid.walmartapp.model.Product;
 import me.kamili.rachid.walmartapp.view.details.DetailsActivity;
-import me.kamili.rachid.walmartapp.view.utils.AttributesUtils;
-import me.kamili.rachid.walmartapp.view.utils.EndlessRecyclerOnScrollListener;
+import me.kamili.rachid.walmartapp.utils.AttributesUtils;
+import me.kamili.rachid.walmartapp.utils.EndlessRecyclerOnScrollListener;
 
 public class ProductsActivity extends AppCompatActivity implements ProductsContract.View, ProductAdapter.OnProductClickListener {
 
@@ -99,6 +99,5 @@ public class ProductsActivity extends AppCompatActivity implements ProductsContr
         Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
         intent.putExtra("position",position);
         startActivity(intent);
-
     }
 }

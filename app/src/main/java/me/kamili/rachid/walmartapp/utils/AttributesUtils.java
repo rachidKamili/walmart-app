@@ -1,4 +1,4 @@
-package me.kamili.rachid.walmartapp.view.utils;
+package me.kamili.rachid.walmartapp.utils;
 
 import java.util.HashMap;
 import java.util.Map;
