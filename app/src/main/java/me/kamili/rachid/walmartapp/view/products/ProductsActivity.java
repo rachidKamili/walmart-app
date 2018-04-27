@@ -1,8 +1,8 @@
 package me.kamili.rachid.walmartapp.view.products;
 
 import android.content.res.Configuration;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
@@ -15,16 +15,17 @@ import butterknife.ButterKnife;
 import me.kamili.rachid.walmartapp.R;
 import me.kamili.rachid.walmartapp.adapters.ProductAdapter;
 import me.kamili.rachid.walmartapp.model.Product;
+import me.kamili.rachid.walmartapp.view.utils.AttributesUtils;
+import me.kamili.rachid.walmartapp.view.utils.EndlessRecyclerOnScrollListener;
 
-public class ProductsActivity extends AppCompatActivity implements ProductsContract.View{
+public class ProductsActivity extends AppCompatActivity implements ProductsContract.View {
 
-    private List<Product> myDataset = new ArrayList<>();
     @BindView(R.id.rvProducts)
     RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-
-
     ProductsPresenter presenter;
+    private List<Product> myDataset = new ArrayList<>();
+    private RecyclerView.Adapter mAdapter;
+    private String mNextPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +38,25 @@ public class ProductsActivity extends AppCompatActivity implements ProductsContr
     }
 
     private void initRecycler() {
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        GridLayoutManager mGridLayoutManager;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mGridLayoutManager = new GridLayoutManager(this, 2);
+        } else {
+            mGridLayoutManager = new GridLayoutManager(this, 3);
         }
-        else{
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        }
-
-        mAdapter = new ProductAdapter(this,myDataset);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mAdapter = new ProductAdapter(this, myDataset);
         mRecyclerView.setAdapter(mAdapter);
 
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+            @Override
+            public void onLoadMore() {
+                if (mNextPage != null){
+                    presenter.loadNextPage(mNextPage);
+                    Toast.makeText(ProductsActivity.this, "Loading more items", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -58,13 +68,17 @@ public class ProductsActivity extends AppCompatActivity implements ProductsContr
 
     @Override
     public void onLoadData(List<Product> data, String nextPage) {
+        myDataset.clear();
         myDataset.addAll(data);
         mAdapter.notifyDataSetChanged();
+        mNextPage = AttributesUtils.getAttributeValue(nextPage,"maxId");
     }
 
     @Override
     public void onLoadNextPage(List<Product> data, String nextPage) {
-        System.out.println(123);
+        myDataset.addAll(data);
+        mAdapter.notifyDataSetChanged();
+        mNextPage = AttributesUtils.getAttributeValue(nextPage,"maxId");
     }
 
     @Override
