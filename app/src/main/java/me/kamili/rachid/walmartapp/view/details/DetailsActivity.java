@@ -13,11 +13,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.kamili.rachid.walmartapp.R;
 import me.kamili.rachid.walmartapp.model.Product;
-import me.kamili.rachid.walmartapp.utils.ActivitySwipeDetector;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsContract.View {
 
-    DetailsPresenter presenter;
     @BindView(R.id.ivImage)
     ImageView ivImage;
     @BindView(R.id.tvPrice)
@@ -26,7 +24,10 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContrac
     TextView tvName;
     @BindView(R.id.tvDesc)
     TextView tvDesc;
-    private int position;
+    @BindView(R.id.linearLayout)
+    LinearLayout linearLayout;
+
+    DetailsPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +35,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContrac
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
 
-        LinearLayout linearLayout = findViewById(R.id.linearLayout);
-        linearLayout.setOnTouchListener(new ActivitySwipeDetector(this));
-
-        position = getIntent().getIntExtra("position", -1);
+        int position = getIntent().getIntExtra("position", -1);
         presenter = new DetailsPresenter(position);
     }
 
@@ -45,6 +43,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContrac
     protected void onStart() {
         super.onStart();
         presenter.attachView(this);
+        linearLayout.setOnTouchListener(presenter);
     }
 
     @Override
@@ -60,29 +59,32 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContrac
 
     @Override
     public void loadProduct(Product product) {
-        loadP(product);
-    }
-
-    @Override
-    public void swipeToNext() {
-        position++;
-        if (presenter.checkProductExists(position)){
-            loadP(presenter.getProductByPosition(position));
-        }
-    }
-
-    @Override
-    public void swipeToPrev() {
-        position--;
-        if (presenter.checkProductExists(position)){
-            loadP(presenter.getProductByPosition(position));
-        }
-    }
-
-    void loadP(Product product){
         Glide.with(this).load(product.getLargeImage()).into(ivImage);
         tvPrice.setText("$"+product.getSalePrice());
         tvName.setText(product.getName());
         tvDesc.setText(product.getShortDescription());
     }
+
+//    @Override
+//    public void swipeToNext() {
+//        position++;
+//        if (presenter.checkProductExists(position)){
+//            loadP(presenter.getProductByPosition(position));
+//        }
+//    }
+//
+//    @Override
+//    public void swipeToPrev() {
+//        position--;
+//        if (presenter.checkProductExists(position)){
+//            loadP(presenter.getProductByPosition(position));
+//        }
+//    }
+
+//    void loadP(Product product){
+//        Glide.with(this).load(product.getLargeImage()).into(ivImage);
+//        tvPrice.setText("$"+product.getSalePrice());
+//        tvName.setText(product.getName());
+//        tvDesc.setText(product.getShortDescription());
+//    }
 }
